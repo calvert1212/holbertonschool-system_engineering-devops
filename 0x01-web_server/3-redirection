@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
-# configures nginx config file to redirect
+# set up an nginx server with modified index file
 
-oldtext="^\tlocation / {"
-newtext="\tlocation /redirect_me {\n\t\treturn 301 \$scheme://youtube.com/watch?v=QH2-TGUlwu4;\n\t}\n\n\tlocationv;"
-
-sudo apt-get -y update
-sudo apt-get -y upgrade
-sudo apt-get -y install nginx
-sudo service nginx start
-sudo sed -i "s@$oldtext@$newtext@" /etc/nginx/sites-available/default
-sudo service nginx restart
-Footer
+sudo apt-get update
+sudo apt-get upgrade -y
+sudo apt-get install nginx -y
+sudo /etc/init.d/nginx start
+echo "Hello World!" | sudo tee /var/www/html/index.html
+find="^\tlocation / {"
+replacement="\tlocation /redirect_me {\n\treturn 301 \$scheme://www.youtube.com/watch?v=exD-oGci-9M;\n\t}\n\tlocation / {"
+sudo sed -i "s@${find}@${replacement}@" /etc/nginx/sites-available/default
+sudo /etc/init.d/nginx restart

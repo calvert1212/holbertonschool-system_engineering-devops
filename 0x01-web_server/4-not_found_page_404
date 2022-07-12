@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-# configure your nginx
+# set up an nginx server with modified index file
 
+sudo apt-get update
+sudo apt-get upgrade -y
+sudo apt-get install nginx -y
+sudo /etc/init.d/nginx start
+echo "Hello World!" | sudo tee /var/www/html/index.html
 find="^\tlocation / {"
-replace="\tlocation /redirect_me {\n\t\treturn 301 \$scheme://youtube.com/watch?v=QH2-TGUlwu4;\n\t}\n\n\tlocation / {"
-replace404="\terror_page 404 /error404.html;\n\n\tlocation / {"
-sudo apt-get -y update
-sudo apt-get -y upgrade
-sudo apt-get -y install nginx
-echo "Hello World!" | sudo tee /var/www/html/index.nginx-debian.html
+replacement="\tlocation /redirect_me {\n\t\treturn 301 \$scheme://www.youtube.com/watch?v=exD-oGci-9M;\n\t}\n\tlocation / {"
+sudo sed -i "s@${find}@${replacement}@" /etc/nginx/sites-available/default
+replacement2="\terror_page 404 /error404.html;\n\n\tlocation / {"
+sudo sed -i "s@${find}@${replacement2}@" /etc/nginx/sites-available/default
 echo "Ceci n'est pas une page" | sudo tee /var/www/html/error404.html
-sudo sed -i "s@$find@$replace@" /etc/nginx/sites-available/default
-sudo sed -i "s@$find@$replace404@" /etc/nginx/sites-available/default
-sudo service nginx restart
-sudo service nginx reload
+sudo /etc/init.d/nginx restart
