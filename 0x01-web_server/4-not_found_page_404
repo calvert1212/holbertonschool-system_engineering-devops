@@ -1,15 +1,21 @@
 #!/usr/bin/env bash
-# set up an nginx server with modified index file
+# Sets up Nginx server with an html file & redirect & 404 page
 
-sudo apt-get update
-sudo apt-get upgrade -y
-sudo apt-get install nginx -y
-sudo /etc/init.d/nginx start
-echo "Hello World!" | sudo tee /var/www/html/index.html
-find="^\tlocation / {"
-replacement="\tlocation /redirect_me {\n\t\treturn 301 \$scheme://www.youtube.com/watch?v=exD-oGci-9M;\n\t}\n\tlocation / {"
-sudo sed -i "s@${find}@${replacement}@" /etc/nginx/sites-available/default
-replacement2="\terror_page 404 /error404.html;\n\n\tlocation / {"
-sudo sed -i "s@${find}@${replacement2}@" /etc/nginx/sites-available/default
-echo "Ceci n'est pas une page" | sudo tee /var/www/html/error404.html
-sudo /etc/init.d/nginx restart
+sudo apt-get -y update
+sudo apt-get -y upgrade
+sudo apt-get install -y nginx
+
+sudo ufw allow 'Nginx HTTP'
+
+sudo sh -c 'echo "Hello World" > /var/www/html/index.html'
+
+sudo sh -c "echo Ceci n\'est pas une page > /var/www/html/error404.html"
+
+findloc="^\tlocation / {"
+update301="\tlocation /redirect_me {\n\t\treturn 301 \$scheme://dndbeyond.com;\n\t}\n\n\tlocation / {"
+sudo sed -i "s@$findloc@$update301@" /etc/nginx/sites-available/default
+
+update404="\terror_page 404 /error404.html;\n\n\tlocation / {"
+sudo sed -i "s@$findloc@$update404@" /etc/nginx/sites-available/default
+
+sudo service nginx restart
