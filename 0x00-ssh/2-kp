@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# creates an ssh key pair of certain criteria
+
+ssh-keygen -t rsa -f school -N betty -b 4096
