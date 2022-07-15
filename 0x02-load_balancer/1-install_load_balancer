@@ -5,10 +5,10 @@ sudo apt-get -y update
 sudo apt-get -y upgrade
 
 sudo apt-get -y install haproxy
+echo "ENABLED=1" | sudo tee -a /etc/default/haproxy
 
 inst="frontend http_web
 \n\tbind *:80
-\n\tstats uri /haproxy?stats
 \n\tdefault_backend custom_backend
 \nbackend custom_backend
 \n\tbalance roundrobin
