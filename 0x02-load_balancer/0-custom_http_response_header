@@ -1,10 +1,21 @@
 #!/usr/bin/env bash
-# Configures Nginx so that its HTTP response contains a custom header (on web-01 and web-02
+# scripts to install and configure nginx webservers
 
+# fetches the latest version of package list from my distro's software repo
 sudo apt-get -y update
-sudo apt-get -y install nginx
+# download and install updates for each outdated package and dependency
 sudo apt-get -y upgrade
-
-sudo sed -i '/listen 80 default_server;/a add_header X-Served-By ${HOSTNAME};' /etc/nginx/sites-available/default
-
+# install nginx
+sudo apt-get -y install nginx
+# edit the homepage/the default page for site
+echo "Hello World" | sudo tee /var/www/html/index.html
+# applying 301 redirection to /redirect_me
+searchingfor="^\tlocation / {"
+replacewith="\tlocation /redirect_me {\n\t\treturn 301 \$scheme://youtube.com/watch?v=QH2-TGUlwu4;}\n\n\tlocation / {"
+sudo sed -i "s@$searchingfor@$replacewith@" /etc/nginx/sites-available/default
+# configure server with a custom 404 page & custom header for HTTP response
+echo "Ceci n'est pas une page" | sudo tee /var/www/html/error404.html
+replace="\terror_page 404 /error404.html;\n\n\tadd_header X-Served-By $HOSTNAME;\n\n\tlocation / {"
+sudo sed -i "s@$searchingfor@$replace@" /etc/nginx/sites-available/default
+# must restart nginx after any updates to the configuration
 sudo service nginx restart
