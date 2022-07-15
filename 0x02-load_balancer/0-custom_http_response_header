@@ -2,9 +2,24 @@
 # Configures Nginx so that its HTTP response contains a custom header (on web-01 and web-02
 
 sudo apt-get -y update
-sudo apt-get -y install nginx
 sudo apt-get -y upgrade
+sudo apt-get install -y nginx
 
-sudo sed -i '/listen 80 default_server;/a add_header X-Served-By ${HOSTNAME};' /etc/nginx/sites-available/default
+
+sudo ufw allow 'Nginx HTTP'
+
+sudo sh -c 'echo "Hello World" > /var/www/html/index.html'
+
+
+sudo sh -c "echo Ceci n\'est pas une page > /var/www/html/error404.html"
+
+findloc="^\tlocation / {"
+update301="\tlocation /redirect_me {\n\t\treturn 301 \$scheme://dndbeyond.com;\n\t}\n\n\tlocation / {"
+sudo sed -i "s@$findloc@$update301@" /etc/nginx/sites-available/default
+
+
+update404="\terror_page 404 /error404.html;\n\n\tadd_header X-Served-By $HOSTNAME;\n\n\tlocation / {"
+sudo sed -i "s@$findloc@$update404@" /etc/nginx/sites-available/default
+
 
 sudo service nginx restart
