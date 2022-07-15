@@ -49,4 +49,4 @@ Host *
     HashKnownHosts yes
     GSSAPIAuthentication yes
 
-IdentifyFile ~/.ssh/school
+    IdentityFile ~/.ssh/school
