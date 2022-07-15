@@ -1,20 +1,13 @@
-# using puppet to make changes to the default ssh config file
-# so that one can connect to a server without typing a password.
-
+# sets up a client SSH config file so that we can connect to a server without using a password
 include stdlib
-
-file_line { 'SSH Private Key':
-  path               => '/etc/ssh/ssh_config',
-  line               => '    IdentityFile ~/.ssh/school',
-  match              => '^[#]+[\s]*(?i)IdentityFile[\s]+~/.ssh/id_rsa$',
-  replace            => true,
-  append_on_no_match => true
+file_line { 'Declare identity file':
+  path    => '/etc/ssh/ssh_config',
+  line    => '    IdentityFile ~/.ssh/school',
+  replace => true,
 }
 
-file_line { 'Deny Password Auth':
-  path               => '/etc/ssh/ssh_config',
-  line               => '    PasswordAuthentication no',
-  match              => '^[#]+[\s]*(?i)PasswordAuthentication[\s]+(yes|no)$',
-  replace            => true,
-  append_on_no_match => true
-}
+file_line { 'Turn off passwd auth':
+  path    => '/etc/ssh/ssh_config',
+  line    => '    PasswordAuthentication no',
+  replace => true,
+} 
