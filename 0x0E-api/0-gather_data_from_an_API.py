@@ -1,44 +1,46 @@
 #!/usr/bin/python3
-"""
-This module retrieves TODO list progress of a given employee ID from a
-REST API.
-"""
+
+"""Python script that, using this REST API, for a given employee ID"""
 
 import requests
-from sys import argv
+import sys
 
-if __name__ == '__main__':
-    if len(argv) != 2:
-        print("Usage: {} EMPLOYEE_ID".format(argv[0]))
-        exit(1)
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        """Get the user ID from command line argument"""
+        user_id = sys.argv[1]
 
-    EMPLOYEE_ID = argv[1]
-    url = "https://jsonplaceholder.typicode.com/users/{}/todos".format(
-        EMPLOYEE_ID)
-    response = requests.get(url)
+        """Construct the API URL using the user ID"""
+        url = f"https://jsonplaceholder.typicode.com/todos?userId={user_id}"
 
-    if response.status_code != 200:
-        print("Error: Request failed with status code {}".format(
-            response.status_code))
-        exit(1)
+        """Send a GET request to the API URL"""
+        response = requests.get(url)
 
-    todos = response.json()
-    total_tasks = len(todos)
-    done_tasks = [todo for todo in todos if todo['completed']]
+        """Check if the response is successful"""
+        if response.status_code == 200:
+            """Get the response data in JSON format"""
+            data = response.json()
 
-    employee_name_url = "https://jsonplaceholder.typicode.com/users/{}".format(
-        EMPLOYEE_ID)
-    response_name = requests.get(employee_name_url)
+            """Get the name of the user from the API"""
+            user_url = f"https://jsonplaceholder.typicode.com/users/{user_id}"
+            user_response = requests.get(user_url)
+            user_data = user_response.json()
+            user_name = user_data["name"]
 
-    if response_name.status_code != 200:
-        print("Error: Request failed with status code {}".format(
-            response_name.status_code))
-        exit(1)
+            """Calculate the number of completed tasks and total tasks"""
+            num_completed_tasks = 0
+            total_tasks = len(data)
+            for task in data:
+                if task["completed"]:
+                    num_completed_tasks += 1
 
-    employee_name = response_name.json().get('name')
-
-    print("Employee {} is done with tasks({}/{}):".format(
-        employee_name, len(done_tasks), total_tasks))
-
-    for todo in done_tasks:
-        print("\t {} {}".format('\t', todo['title']))
+            """Print the result"""
+            print(f"Employee {user_name} is done with tasks\
+                ({num_completed_tasks}/{total_tasks}):")
+            for task in data:
+                if task["completed"]:
+                    print(f"\t {task['title']}")
+        else:
+            print(f"Error: {response.status_code}")
+    else:
+        print("Please provide a user ID as a command line argument.")
