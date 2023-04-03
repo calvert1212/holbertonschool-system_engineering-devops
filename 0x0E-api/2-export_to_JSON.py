@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """
 This module retrieves TODO list progress of a given employee ID from a REST
-API and exports the data to a JSON file.
+API and exports data to a JSON file.
 """
 import json
 import requests

@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-Retrieves TODO list progress of a given employee ID from a
+This module retrieves TODO list progress of a given employee ID from a
 REST API.
 """
 
