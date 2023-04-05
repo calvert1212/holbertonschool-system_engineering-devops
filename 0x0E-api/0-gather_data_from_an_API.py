@@ -26,7 +26,7 @@ if __name__ == "__main__":
             employee.get("name"), len(todo_list), len(todos)
         ), *todo_list, sep="\n\t "
     )
-        exit(1)
+    exit(1)
 
     employee_name = response_name.json().get('name')
 
